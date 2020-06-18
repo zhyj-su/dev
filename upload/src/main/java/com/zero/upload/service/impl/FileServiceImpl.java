@@ -9,16 +9,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Calendar;
+import org.springframework.util.DigestUtils;
 
 /**
  * @Author: zhyj
@@ -39,14 +39,21 @@ public class FileServiceImpl implements FileService {
     @Override
     public String storeFile(MultipartFile file) {
         // Normalize file name
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originalFilename = file.getOriginalFilename();
+        String suffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
+        String fileName=DateUtils.getTime()+"."+suffix;
 
         try {
-            // Check if the file's name contains invalid characters
-            if(fileName.contains("..")) {
-                throw new FileException("Sorry! Filename contains invalid path sequence " + fileName);
-            }
+            InputStream inputStream = file.getInputStream();
+            String md5 = DigestUtils.md5DigestAsHex(inputStream);
+            System.out.println(md5);
 
+            //TODO 判断如果已经存储了该文件 查询出已经存储的文件路径
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
             // Copy file to the target location (Replacing existing file with the same name)
             Path dayDir = Paths.get(path).
                     resolve(DateUtils.getYear()).

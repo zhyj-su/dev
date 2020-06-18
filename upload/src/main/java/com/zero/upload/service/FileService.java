@@ -8,7 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
  * @Date: 2020/6/18 14:55
  */
 public interface FileService {
-    public String storeFile(MultipartFile file);
+    /**
+     * 存储文件方法
+     * @param file 文件对象
+     * @return String
+     */
+    String storeFile(MultipartFile file);
 
-    public Resource loadFileAsResource(String fileName);
+    Resource loadFileAsResource(String fileName);
 }
