@@ -1,6 +1,7 @@
 package com.zero.upload.service.impl;
 
 import com.zero.upload.model.FileException;
+import com.zero.upload.model.FileInfo;
 import com.zero.upload.service.FileService;
 
 
@@ -37,7 +38,8 @@ public class FileServiceImpl implements FileService {
      * @return 文件名
      */
     @Override
-    public String storeFile(MultipartFile file) {
+    public FileInfo storeFile(MultipartFile file) {
+        FileInfo fileInfo=new FileInfo();
         // Normalize file name
         String originalFilename = file.getOriginalFilename();
         String suffix = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
@@ -55,11 +57,14 @@ public class FileServiceImpl implements FileService {
 
         try {
             // Copy file to the target location (Replacing existing file with the same name)
+
+            String year = DateUtils.getYear();
+            String month = DateUtils.getMonth();
+            String day = DateUtils.getDay();
             Path dayDir = Paths.get(path).
-                    resolve(DateUtils.getYear()).
-                    resolve(DateUtils.getYear()).
-                    resolve(DateUtils.getMonth()).
-                    resolve(DateUtils.getDay());
+                    resolve(year).
+                    resolve(month).
+                    resolve(day);
 
             Files.createDirectories(dayDir);
 
@@ -67,7 +72,13 @@ public class FileServiceImpl implements FileService {
                     resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            fileInfo.setFileName(fileName);
+            fileInfo.setYearDir(year);
+            fileInfo.setMonthDir(month);
+            fileInfo.setDayDir(day);
+
+            return fileInfo;
+
         } catch (IOException ex) {
             throw new FileException("Could not store file " + fileName + ". Please try again!", ex);
         }
@@ -75,21 +86,21 @@ public class FileServiceImpl implements FileService {
 
     /**
      * 加载文件
-     * @param fileName 文件名
+     * @param fileInfo 文件info对象
      * @return 文件
      */
     @Override
-    public Resource loadFileAsResource(String fileName) {
+    public Resource loadFileAsResource(FileInfo fileInfo) {
         try {
-            Path filePath = Paths.get(path).resolve(fileName).normalize();
+            Path filePath = Paths.get(path).resolve(fileInfo.getYearDir()).resolve(fileInfo.getMonthDir()).resolve(fileInfo.getDayDir()).resolve(fileInfo.getFileName()).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;
             } else {
-                throw new FileException("File not found " + fileName);
+                throw new FileException("File not found " + fileInfo.getFileName());
             }
         } catch (MalformedURLException ex) {
-            throw new FileException("File not found " + fileName, ex);
+            throw new FileException("File not found " + fileInfo.getFileName(), ex);
         }
     }
 }

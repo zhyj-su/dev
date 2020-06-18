@@ -1,5 +1,6 @@
 package com.zero.upload.service;
 
+import com.zero.upload.model.FileInfo;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +14,7 @@ public interface FileService {
      * @param file 文件对象
      * @return String
      */
-    String storeFile(MultipartFile file);
+    FileInfo storeFile(MultipartFile file);
 
-    Resource loadFileAsResource(String fileName);
+    Resource loadFileAsResource(FileInfo fileInfo);
 }

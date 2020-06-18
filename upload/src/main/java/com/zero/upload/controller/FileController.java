@@ -1,5 +1,6 @@
 package com.zero.upload.controller;
 
+import com.zero.upload.model.FileInfo;
 import com.zero.upload.model.Response;
 import com.zero.upload.service.FileService;
 import org.slf4j.Logger;
@@ -33,11 +34,15 @@ public class FileController {
 
     @PostMapping("/uploadFile")
     public Response uploadFile(@RequestParam("file") MultipartFile file){
-        String fileName = fileService.storeFile(file);
+        FileInfo fileInfo = fileService.storeFile(file);
+        String fileName = fileInfo.getFileName();
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
+                .path("/file/download/")
+                .path(fileInfo.getYearDir()+"/").
+                        path(fileInfo.getMonthDir()+"/").
+                        path(fileInfo.getDayDir()+"/").
+                        path(fileInfo.getFileName())
                 .toUriString();
 
         return new Response(fileName, fileDownloadUri,
@@ -52,14 +57,28 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+    @GetMapping("/download/{year}/{month}/{day}/{fileName}}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable(name = "year") String year,
+                                                 @PathVariable(name = "month") String month,
+                                                 @PathVariable(name = "day") String day,
+                                                 @PathVariable(name = "fileName") String fileName,
+                                                 HttpServletRequest request) {
+        logger.info("----------------");
+
+        FileInfo fileInfo=new FileInfo();
+        fileInfo.setYearDir(year);
+        fileInfo.setMonthDir(month);
+        fileInfo.setDayDir(day);
+        fileInfo.setFileName(fileName);
+
         // Load file as Resource
-        Resource resource = fileService.loadFileAsResource(fileName);
+        Resource resource = fileService.loadFileAsResource(fileInfo);
+
 
         // Try to determine file's content type
         String contentType = null;
         try {
+            System.out.println(resource.getFile().getAbsolutePath());
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
         } catch (IOException ex) {
             logger.info("Could not determine file type.");
