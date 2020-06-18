@@ -1,11 +1,11 @@
 package com.zero.upload.service.impl;
 
 import com.zero.upload.model.FileException;
-import com.zero.upload.model.FileProperties;
 import com.zero.upload.service.FileService;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zero.upload.utils.DateUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Calendar;
+
 /**
  * @Author: zhyj
  * @Date: 2020/6/18 14:56
@@ -25,18 +27,8 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileServiceImpl implements FileService {
 
-
-    private final Path fileStorageLocation; // 文件在本地存储的地址
-
-    @Autowired
-    public FileServiceImpl(FileProperties fileProperties) {
-        this.fileStorageLocation = Paths.get(fileProperties.getUploadDir()).toAbsolutePath().normalize();
-        try {
-            Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            throw new FileException("Could not create the directory where the uploaded files will be stored.", ex);
-        }
-    }
+    @Value("${file.upload-dir}")
+    private String path;
 
     /**
      * 存储文件到系统
@@ -56,7 +48,16 @@ public class FileServiceImpl implements FileService {
             }
 
             // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path dayDir = Paths.get(path).
+                    resolve(DateUtils.getYear()).
+                    resolve(DateUtils.getYear()).
+                    resolve(DateUtils.getMonth()).
+                    resolve(DateUtils.getDay());
+
+            Files.createDirectories(dayDir);
+
+            Path targetLocation = dayDir.
+                    resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             return fileName;
@@ -73,7 +74,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public Resource loadFileAsResource(String fileName) {
         try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Path filePath = Paths.get(path).resolve(fileName).normalize();
             Resource resource = new UrlResource(filePath.toUri());
             if(resource.exists()) {
                 return resource;
