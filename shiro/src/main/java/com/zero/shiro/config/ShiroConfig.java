@@ -4,10 +4,12 @@ import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SubjectFactory;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.filter.authc.LogoutFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,7 +23,7 @@ import javax.servlet.Filter;
  * @Date: 2020/6/19 10:48
  */
 @Configuration
-public class shiroConfig {
+public class ShiroConfig {
     /**
      * 告诉shiro不要使用默认的DefaultSubject创建对象，因为不能创建Session
      * @return SubjectFactory
@@ -67,20 +69,39 @@ public class shiroConfig {
          * 指定除了login和logout之外的请求都先经过jwtFilter
          * */
         Map<String, Filter> filterMap = new HashMap<>(5);
-        //这个地方其实另外两个filter可以不设置，默认就是
-        filterMap.put("anon", new AnonymousFilter());
         filterMap.put("jwt", new JwtFilter());
+        //这个地方其实另外两个filter anon logout可以不设置，默认就是
+        filterMap.put("anon", new AnonymousFilter());
         filterMap.put("logout", new LogoutFilter());
         shiroFilter.setFilters(filterMap);
 
         // 拦截器
         Map<String, String> filterRuleMap = new LinkedHashMap<>();
         filterRuleMap.put("/login", "anon");
-        filterRuleMap.put("/test/info","anon");
         filterRuleMap.put("/logout", "logout");
         filterRuleMap.put("/**", "jwt");
         shiroFilter.setFilterChainDefinitionMap(filterRuleMap);
 
         return shiroFilter;
     }
+
+
+    /**
+     * 开启shiro reuiresRoles requieresPermission接口
+     * @return DefaultAdvisorAutoProxyCreator
+     */
+    @Bean
+    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
+        DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
+        advisorAutoProxyCreator.setProxyTargetClass(true);
+        return advisorAutoProxyCreator;
+    }
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
+        return authorizationAttributeSourceAdvisor;
+    }
+
 }

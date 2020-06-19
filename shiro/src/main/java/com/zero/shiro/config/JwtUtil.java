@@ -16,7 +16,9 @@ import java.util.UUID;
  * @Date: 2020/6/19 11:10
  */
 public class JwtUtil {
-    //创建默认的秘钥和算法，供无参的构造方法使用
+    /**
+     * 创建默认的秘钥和算法，供无参的构造方法使用
+     */
     private static final String defaultbase64EncodedSecretKey = "badbabe";
     private static final SignatureAlgorithm defaultsignatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -52,7 +54,7 @@ public class JwtUtil {
      */
     public String encode(String iss, long ttlMillis, Map<String, Object> claims) {
         if (claims == null) {
-            claims = new HashMap<>();
+            claims = new HashMap<>(15);
         }
         long nowMillis = System.currentTimeMillis();
 
