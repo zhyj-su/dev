@@ -32,13 +32,13 @@ public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    @PostMapping("/uploadFile")
+    @RequestMapping(value = "/uploadFile",method = RequestMethod.POST)
     public Response uploadFile(@RequestParam("file") MultipartFile file){
         FileInfo fileInfo = fileService.storeFile(file);
         String fileName = fileInfo.getFileName();
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/file/download/")
+                .path("file/download/")
                 .path(fileInfo.getYearDir()+"/").
                         path(fileInfo.getMonthDir()+"/").
                         path(fileInfo.getDayDir()+"/").
@@ -50,19 +50,22 @@ public class FileController {
     }
 
 
-    @PostMapping("/uploadMultipleFiles")
+    @RequestMapping(value = "/uploadMultipleFiles",method = RequestMethod.POST)
     public List<Response> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
         return Arrays.stream(files)
                 .map(this::uploadFile)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/download/{year}/{month}/{day}/{fileName}}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable(name = "year") String year,
-                                                 @PathVariable(name = "month") String month,
-                                                 @PathVariable(name = "day") String day,
-                                                 @PathVariable(name = "fileName") String fileName,
-                                                 HttpServletRequest request) {
+
+    @RequestMapping(value = "/download/{year}/{month}/{day}/{fileName}")
+    public ResponseEntity<Resource> downloadFile(
+            @PathVariable(name = "year") String year,
+            @PathVariable(name = "month") String month,
+            @PathVariable(name = "day") String day,
+            @PathVariable(name = "fileName") String fileName,
+            HttpServletRequest request
+                                                 ) {
         logger.info("----------------");
 
         FileInfo fileInfo=new FileInfo();
