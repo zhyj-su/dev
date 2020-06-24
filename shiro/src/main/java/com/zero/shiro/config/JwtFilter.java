@@ -22,8 +22,8 @@ import java.util.Map;
 @Slf4j
 public class JwtFilter extends AccessControlFilter {
     /**
-     *  1. 返回true，shiro就直接允许访问url
-     *  2. 返回false，shiro才会根据onAccessDenied的方法的返回值决定是否允许访问url
+     *  1. 返回true，shiro 就直接允许访问url
+     *  2. 返回false，shiro 才会根据onAccessDenied的方法的返回值决定是否允许访问url
      * @param request request请求
      * @param response response响应
      * @param mappedValue mappedValue
@@ -37,7 +37,7 @@ public class JwtFilter extends AccessControlFilter {
         if (((HttpServletRequest) request).getHeader(DataConstant.AUTHORIZATION) != null) {
             //如果存在，则进入 executeLogin 方法执行登入，检查 token 是否正确
             try {
-                boolean flag = executeLogin(request, response);
+                executeLogin(request, response);
                 return true;
             } catch (Exception e) {
                 //token 错误

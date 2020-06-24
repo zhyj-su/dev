@@ -1,0 +1,11 @@
+package com.zero.datadict.service;
+
+import com.zero.datadict.entity.Dict;
+
+/**
+ * @Author: zhyj
+ * @Date: 2020/6/23 11:00
+ */
+public interface DictService {
+    public Dict getByTypeAndTableNameAndFieldName(String type,String tableName,String fieldName);
+}

@@ -5,11 +5,11 @@ import com.zero.shiro.entity.User;
 import com.zero.shiro.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +21,13 @@ import java.util.Map;
 @Slf4j
 public class UserLoginController {
 
-    @Autowired
+    @Resource
     private UserService userService;
 
     @RequestMapping("/login")
     public Map<String, String> login(String username, String password) {
         log.info("username:{},password:{}",username,password);
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>(5);
 
         User user = userService.findByUserNameAndPassword(username, password);
         if(user==null){
@@ -37,7 +37,7 @@ public class UserLoginController {
 
 
         JwtUtil jwtUtil = new JwtUtil();
-        Map<String, Object> chaim = new HashMap<>();
+        Map<String, Object> chaim = new HashMap<>(5);
         chaim.put("username", username);
         String jwtToken = jwtUtil.encode(username, 10 * 60 * 1000, chaim);
         map.put("msg", "登录成功");

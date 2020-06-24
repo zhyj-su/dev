@@ -16,8 +16,8 @@ public class HuaWeiConfig {
     public static String ak;
 
     @Autowired
-    public void setAK(@Value("${huawei.oss.ak}")String HUAWEI_OSS_AK) {
-        ak=HUAWEI_OSS_AK;
+    public void setAK(@Value("${huawei.oss.ak}")String huaweiOssAk) {
+        ak=huaweiOssAk;
     }
 
     /**
@@ -26,8 +26,8 @@ public class HuaWeiConfig {
     public static String sk;
 
     @Autowired
-    public void setSK(@Value("${huawei.oss.sk}")String HUAWEI_OSS_SK) {
-        sk=HUAWEI_OSS_SK;
+    public void setSK(@Value("${huawei.oss.sk}")String huaweiOssSk) {
+        sk=huaweiOssSk;
     }
 
     /**

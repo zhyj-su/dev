@@ -19,6 +19,7 @@ public class JwtUtil {
     /**
      * 创建默认的秘钥和算法，供无参的构造方法使用
      */
+    private static final String DEFAULT_BASE64_ENCODED_SECRETKEY ="badbabe";
     private static final String defaultbase64EncodedSecretKey = "badbabe";
     private static final SignatureAlgorithm defaultsignatureAlgorithm = SignatureAlgorithm.HS256;
 
