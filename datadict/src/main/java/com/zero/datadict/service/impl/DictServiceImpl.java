@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: zhyj
@@ -19,6 +21,15 @@ public class DictServiceImpl implements DictService {
     @Resource
     private DictReposity dictReposity;
 
+
+    @Override
+    public Dict getDictList() {
+        Dict dict = new Dict();
+        dict.setId(1);
+        dict.setTableName("1");
+        dict.setType("1");
+        return dict;
+    }
 
     @Override
     public Dict getByTypeAndTableNameAndFieldName(String type, String tableName, String fieldName) {

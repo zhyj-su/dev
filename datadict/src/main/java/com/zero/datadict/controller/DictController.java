@@ -1,9 +1,13 @@
 package com.zero.datadict.controller;
 
 import com.zero.datadict.bean.DictTest;
+import com.zero.datadict.entity.Dict;
+import com.zero.datadict.service.DictService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @Author: zhyj
@@ -14,11 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class DictController {
 
+    @Resource
+    private DictService dictService;
+
     @RequestMapping("/test")
     public Object testDict(){
-        DictTest dictTest=new DictTest();
-        dictTest.setName("test");
-        dictTest.setStatus(1);
-        return dictTest;
+
+        return dictService.getDictList();
     }
 }

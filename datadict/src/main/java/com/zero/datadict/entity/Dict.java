@@ -25,6 +25,7 @@ public class Dict implements Serializable {
     private Integer id;
 
     @Column(nullable = false)
+    @com.zero.datadict.annotation.Dict(dicCode = "type",dicText = "zhangsan")
     private String type;
 
     @Column(nullable = false)
