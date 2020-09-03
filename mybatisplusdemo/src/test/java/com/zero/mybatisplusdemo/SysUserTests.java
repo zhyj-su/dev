@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zhyj
@@ -57,6 +55,40 @@ public class SysUserTests {
 
     }
 
+    @Test
+    public void testBatchAdd(){
+        SysUser sysUser = new SysUser();
+        sysUser.setUsername("lisi1");
+        sysUser.setRealname("李四1");
+        sysUser.setPassword("1234567");
+        sysUser.setSalt("123456");
+        sysUser.setAvatar("http://baidu.com");
+        sysUser.setBirthday(new Date());
+        sysUser.setSex(1);
+        sysUser.setEmail("14143440867@qq.com");
+        sysUser.setPhone("12776565678");
+        sysUser.setOrgCode("orgcode");
+        sysUser.setOrgCodeTxt("orgCodeText");
+        sysUser.setStatus(1);
+        sysUser.setDelFlag(0);
+        sysUser.setWorkNo("1234567");
+        sysUser.setPost("post");
+        sysUser.setTelephone("05122712245");
+        sysUser.setCreateBy("admin");
+        sysUser.setCreateTime(new Date());
+        sysUser.setUpdateTime(new Date());
+        sysUser.setActivitiSync(1);
+        sysUser.setUserIdentity(0);
+        sysUser.setDepartIds("depart");
+        sysUser.setThirdId("1");
+        sysUser.setThirdType("wechat");
+        sysUser.setRelTenantIds("tenantIds");
+
+        List<SysUser> sysUserList = new ArrayList<>();
+        sysUserList.add(sysUser);
+        sysUserService.saveBatch(sysUserList);
+
+    }
 
     @Test
     public void testDel(){
