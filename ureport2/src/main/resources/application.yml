@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: local
+# ureport自定义文件系统配置
+xinhua:
+  erp:
+    ureport:
+      prefix: 'template:'
+      fileStoreDir: 'D:\ureportfiles'
+      disabled: false

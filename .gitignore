@@ -24,3 +24,7 @@ hs_err_pid*
 
 #.mvn
 .mvn
+
+#jrebel
+rebel.xml
+rebel-remote.xml
