@@ -2,6 +2,7 @@ package com.zero.springboot.controller;
 
 import com.zero.springboot.exception.ZeroException;
 import com.zero.springboot.service.ISysUserService;
+import com.zero.springboot.utils.db.RedisUtil;
 import com.zero.springboot.vo.common.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,9 +20,12 @@ import javax.annotation.Resource;
  */
 @Api(tags="测试")
 @RestController
-@RequestMapping("/test1")
+@RequestMapping("/test")
 @Slf4j
 public class TestController {
+    @Resource
+    private RedisUtil redisUtil;
+
     @Resource
     private ISysUserService userService;
 
@@ -29,5 +33,12 @@ public class TestController {
     @GetMapping("test")
     public Result<?> test(){
       return Result.ok(userService.getUserByName("zhangsan"));
+    }
+
+    @ApiOperation(value="测试", notes="测试")
+    @GetMapping("test1")
+    public Result<?> test1(){
+        redisUtil.set("test:redis","1");
+        return Result.ok((String) redisUtil.get("test:redis"));
     }
 }
