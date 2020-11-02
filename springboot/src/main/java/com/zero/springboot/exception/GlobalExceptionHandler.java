@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -19,9 +19,10 @@ import java.util.stream.Collectors;
  * @date 2020/10/28 13:31
  */
 @ControllerAdvice
-@Slf4j
 @ResponseBody
+@Slf4j
 public class GlobalExceptionHandler {
+
     /**
      * 处理自定义异常
      */
@@ -31,11 +32,11 @@ public class GlobalExceptionHandler {
         return Result.error(e.getMessage());
     }
 
-    /*@ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler(NoHandlerFoundException.class)
     public Result<?> handlerNoFoundException(Exception e) {
         log.error(e.getMessage(), e);
         return Result.error(404, "路径不存在，请检查路径是否正确");
-    }*/
+    }
 
     @ExceptionHandler(DuplicateKeyException.class)
     public Result<?> handleDuplicateKeyException(DuplicateKeyException e){
