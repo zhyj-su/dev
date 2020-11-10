@@ -184,21 +184,21 @@ public class FreeMarkerUtil {
         String databaseName = (String) dataBases.get(0).get("databaseName");
 
         //查询数据库表信息
-        String template="SELECT\n" +
-                "         * a.table_name tableName,\n" +
-                "         * a.table_comment tableRemark,\n" +
-                "         * b.COLUMN_NAME columnName,\n" +
-                "         * b.column_comment columnRemark,\n" +
-                "         * b.column_type columnType,\n" +
-                "         * b.column_key columnKey\n" +
-                "         * FROM\n" +
-                "         * information_schema. TABLES a\n" +
-                "         * LEFT JOIN information_schema.COLUMNS b ON a.table_name = b.TABLE_NAME\n" +
-                "         * WHERE\n" +
-                "         * a.table_schema = '{}'\n" +
-                "         * and a.table_name=\"{}\"\n" +
-                "         * ORDER BY\n" +
-                "         * a.table_name";
+        String template="SELECT DISTINCT\n" +
+                "a.table_name tableName,\n" +
+                "a.table_comment tableRemark,\n" +
+                "b.COLUMN_NAME columnName,\n" +
+                "b.column_comment columnRemark,\n" +
+                "b.column_type columnType,\n" +
+                "b.column_key columnKey\n" +
+                "FROM\n" +
+                "information_schema. TABLES a\n" +
+                "LEFT JOIN information_schema.COLUMNS b ON a.table_name = b.TABLE_NAME\n" +
+                "WHERE\n" +
+                "a.table_schema = '{}'\n" +
+                "and a.table_name=\"{}\"\n" +
+                "ORDER BY\n" +
+                "a.table_name";
         String sql= StrUtil.format(template,databaseName,tableName);
 
         // mysql查询表结构的语句,如果是其他数据库,修改此处查询语句
@@ -211,6 +211,9 @@ public class FreeMarkerUtil {
             // 字段名称
             String columnName = map.get("columnName").toString();
             columnMap.put("columnName", columnName);
+            //字段备注
+            String columnRemark = map.get("columnRemark").toString();
+            columnMap.put("columnRemark",columnRemark);
             // 字段类型
             String columnType = map.get("columnType").toString().toUpperCase();
             columnType = matchResult(columnType).trim();
