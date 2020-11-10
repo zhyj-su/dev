@@ -133,6 +133,11 @@
             <version>2.2.6</version>
         </dependency>
 
+        <!-- freemarker -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
 
 
 
