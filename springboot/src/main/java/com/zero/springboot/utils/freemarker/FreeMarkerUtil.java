@@ -1,8 +1,10 @@
 package com.zero.springboot.utils.freemarker;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +30,7 @@ import java.util.regex.Pattern;
  *  select table_name 表名,TABLE_COMMENT 表注释 from INFORMATION_SCHEMA.TABLES Where table_schema = '数据库名称' AND table_name ="表名"
  */
 @Component
+@Slf4j
 public class FreeMarkerUtil {
     @Resource
     private Configuration freeMarker;
@@ -89,6 +92,8 @@ public class FreeMarkerUtil {
     public String getEntityName(String tableName){
         return underlineToHump(capFirst(tableName.toLowerCase()));
     }
+
+
 
     /**
      * 获取首字母小写类名
@@ -157,6 +162,39 @@ public class FreeMarkerUtil {
     }
 
     /**
+     * 获取当前连接的数据库名
+     * @return
+     */
+    public String getDataBaseName(){
+        String currentDataBaseSql="select database() databaseName";
+        List<Map<String, Object>> dataBases = jdbcTemplate.queryForList(currentDataBaseSql);
+        return  (String) dataBases.get(0).get("databaseName");
+    }
+
+    /**
+     * 获取表描述
+     * @param tableName
+     * @return
+     */
+    public String getTableDesc(String tableName){
+        /***
+         SELECT table_name name,TABLE_COMMENT value FROM INFORMATION_SCHEMA.TABLES WHERE table_type='base table'
+         and table_schema = 'a_erp' and table_name="sys_user"
+
+         ***/
+        String template="SELECT table_name name,TABLE_COMMENT value FROM INFORMATION_SCHEMA.TABLES WHERE table_type='base table'\n" +
+                "and table_schema = \"{}\" and table_name=\"{}\"";
+        String sql=StrUtil.format(template,getDataBaseName(),tableName);
+        List<Map<String, Object>> lists = jdbcTemplate.queryForList(sql);
+        log.info("lists:{}", JSON.toJSONString(lists));
+
+        Object o = lists.get(0);
+        log.info("obj:{}",JSON.toJSONString(o));
+
+        return (String) lists.get(0).get("value");
+    }
+
+    /**
      * 获取表信息
      */
     public List<Map<String, String>> getDataInfo(String tableName){
@@ -178,11 +216,6 @@ public class FreeMarkerUtil {
          * a.table_name
          */
 
-        //获取当前连接的数据库名
-        String currentDataBaseSql="select database() databaseName";
-        List<Map<String, Object>> dataBases = jdbcTemplate.queryForList(currentDataBaseSql);
-        String databaseName = (String) dataBases.get(0).get("databaseName");
-
         //查询数据库表信息
         String template="SELECT DISTINCT\n" +
                 "a.table_name tableName,\n" +
@@ -199,7 +232,7 @@ public class FreeMarkerUtil {
                 "and a.table_name=\"{}\"\n" +
                 "ORDER BY\n" +
                 "a.table_name";
-        String sql= StrUtil.format(template,databaseName,tableName);
+        String sql= StrUtil.format(template,getDataBaseName(),tableName);
 
         // mysql查询表结构的语句,如果是其他数据库,修改此处查询语句
         //String sql = "show columns from "+tableName;

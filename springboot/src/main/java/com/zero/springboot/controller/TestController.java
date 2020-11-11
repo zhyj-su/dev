@@ -7,11 +7,15 @@ import com.zero.springboot.vo.common.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.bind.BindResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author zhyj
@@ -40,5 +44,11 @@ public class TestController {
     public Result<?> test1(){
         redisUtil.set("test:redis","1");
         return Result.ok((String) redisUtil.get("test:redis"));
+    }
+
+    @ApiOperation(value="参数测试", notes="测试")
+    @GetMapping("test2")
+    public Result<?> test2(@NotBlank @RequestParam("id") String id){
+        return Result.ok("参数测试");
     }
 }

@@ -1,9 +1,11 @@
 package com.zero.springboot.exception;
 
+import cn.hutool.core.util.StrUtil;
 import com.zero.springboot.vo.common.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -82,5 +84,18 @@ public class GlobalExceptionHandler {
     public Result<?> handlerArithmeticException(ArithmeticException e){
         log.error(e.getMessage(),e);
         return Result.error("计算失败,请检查计算过程!");
+    }
+
+    /**
+     * 请求参数缺失
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public Result<?> MissingServletRequestParameterException(MissingServletRequestParameterException e){
+        log.error(e.getMessage(),e);
+        String parameterName = e.getParameterName();
+        String parameterType = e.getParameterType();
+        return Result.error(StrUtil.format("参数{}缺失,类型为{}",parameterName,parameterType));
     }
 }

@@ -32,12 +32,16 @@ public class FreeMarkerController {
         basePackageUrl = basePackageUrl == null? "com.example.demo": basePackageUrl;
         //bean类名
         String entityName = freeMarkerUtil.getEntityName(tableName);
+        //表的描述
+        String tableDesc = freeMarkerUtil.getTableDesc(tableName);
+        log.info("tableDesc:{}",tableDesc);
 
         //封装参数
         Map<String, Object> root = new HashMap<>();
         root.put("basePackageUrl", basePackageUrl);
         //表参数
         root.put("tableName", tableName);
+        root.put("tableDesc",tableDesc);
         root.put("entityName", entityName);
         root.put("entityNameLower", freeMarkerUtil.getEntityNameLower(tableName));
         root.put("columns", freeMarkerUtil.getDataInfo(tableName));
@@ -51,7 +55,7 @@ public class FreeMarkerController {
         // 生成controller
         freeMarkerUtil.generate(root,"controller.ftl",saveUrl+"\\controller",entityName+"Controller.java");
         //生成service
-        freeMarkerUtil.generate(root,"service.ftl",saveUrl+"\\service",entityName+"Service.java");
+        freeMarkerUtil.generate(root,"service.ftl",saveUrl+"\\service","I"+entityName+"Service.java");
         //生成serviceImpl
         freeMarkerUtil.generate(root,"serviceImpl.ftl",saveUrl+"\\service\\impl",entityName+"ServiceImpl.java");
 

@@ -1,7 +1,10 @@
 package ${basePackageUrl}.mappper;
 
-import ${basePackageUrl}.bean.${entityName};
-import org.apache.ibatis.annotations.Mapper;
+import ${basePackageUrl}.entity.${entityName};
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 
 /**
@@ -10,8 +13,8 @@ import org.apache.ibatis.annotations.Mapper;
 * @Date:   ${.now?string["yyyy-MM-dd"]}
 * @Version: V1.0
 */
-public interface ${entityName}Mapper {
+public interface ${entityName}Mapper extends BaseMapper<${entityName}>{
 
-    ${entityName} selectByPrimaryKey(Integer id);
+    void batchInsert(List<${entityName}> ${entityName}List);
 
 }
