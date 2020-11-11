@@ -110,7 +110,7 @@ public class ${entityName}Controller {
     */
     private void buildQueryWrapper(${entityName} ${entityNameLower}){
         LambdaQueryWrapper<${entityName}> queryWrapper = new LambdaQueryWrapper<>();
-        //TODO
+        //TODO 构建查询条件
         return queryWrapper;
     }
 

@@ -46,8 +46,12 @@ public class FreeMarkerController {
         root.put("entityNameLower", freeMarkerUtil.getEntityNameLower(tableName));
         root.put("columns", freeMarkerUtil.getDataInfo(tableName));
 
-        // 生成bean
+        // 生成entity
         freeMarkerUtil.generate(root,"entity.ftl",saveUrl+"\\entity",entityName+".java");
+        //生成vo
+        freeMarkerUtil.generate(root,"vo.ftl",saveUrl+"\\Vo",entityName+"Vo.java");
+        //生成dto
+        freeMarkerUtil.generate(root,"dto.ftl",saveUrl+"\\dto",entityName+"Dto.java");
         // 生成dao
         freeMarkerUtil.generate(root,"mapper.ftl",saveUrl+"\\mapper",entityName+"Mapper.java");
         // 生成mapper
