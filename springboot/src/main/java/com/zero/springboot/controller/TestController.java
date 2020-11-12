@@ -74,4 +74,22 @@ public class TestController {
         return Result.ok(enumName);
 
     }
+
+    @ApiOperation(value="枚举测试", notes="测试")
+    @GetMapping("test4")
+    public Result<?> test4(){
+        //枚举名称
+        String enumName = KvEnumUtil.getEnumName(CommonEnum.Sex.class);
+        log.info("enumName:{}",enumName);
+        //根据枚举名称获取枚举value
+        String enumValueByName = KvEnumUtil.getEnumValueByName(CommonEnum.Sex.class, CommonEnum.Sex.MAN.name(), String.class);
+        log.info("enumValueByName:{}",enumValueByName);
+        //根据枚举text获取枚举值
+        String enumValueByText = KvEnumUtil.getEnumValueByText(CommonEnum.Sex.class, "女", String.class);
+        log.info("enumValueByText:{}",enumValueByText);
+        //根据value获取枚举中第一个text
+        String enumTextByValue = KvEnumUtil.getEnumTextByValue(CommonEnum.Sex.class, "0");
+        log.info("enumTextByValue:{}",enumTextByValue);
+        return Result.ok();
+    }
 }
